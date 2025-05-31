@@ -74,16 +74,31 @@ class AuthService {
   getStoredUser(): User | null {
     try {
       const userData = localStorage.getItem('user_data');
-      return userData ? JSON.parse(userData) : null;
+      if (!userData) return null;
+      
+      const parsedUser = JSON.parse(userData);
+      
+      // Validate that the parsed data has the required User fields
+      if (parsedUser && typeof parsedUser === 'object' && 
+          parsedUser.id && parsedUser.username && parsedUser.email) {
+        return parsedUser;
+      }
+      
+      console.warn('Invalid user data found in localStorage, clearing...');
+      localStorage.removeItem('user_data');
+      return null;
     } catch (error) {
       console.error('Error parsing stored user data:', error);
+      localStorage.removeItem('user_data'); // Clear corrupted data
       return null;
     }
   }
 
   // Check if user is authenticated
   isAuthenticated(): boolean {
-    return !!apiService.getAuthToken() && !!this.getStoredUser();
+    const token = apiService.getAuthToken();
+    const user = this.getStoredUser();
+    return !!(token && user);
   }
 
   // Check if user has specific role

@@ -110,7 +110,7 @@ export interface FlightSearchCriteria {
   departureDate: string;
   seatClass?: SeatClass;
   passengers?: number;
-  includeTransit?: boolean;
+  includeTransit: boolean;
 }
 
 export interface FlightSearchResult {

@@ -20,10 +20,10 @@ import { BookingDetailsPage } from '@/pages/BookingDetailsPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { FlightManagementPage } from '@/pages/FlightManagementPage';
 import { BookingManagementPage } from '@/pages/BookingManagementPage';
-import { UserManagementPage } from '@/pages/admin';
+import { UserManagementPage } from '@/pages/admin/user-management';
 import { ReportsPage } from '@/pages/ReportsPage';
 import { AirportManagementPage } from '@/pages/AirportManagementPage';
-import { AirplaneManagementPage } from '@/pages/AirplaneManagementPage';
+import { AirplaneManagementPage } from '@/pages/user/airplain/AirplaneManagementPage.tsx';
 
 // Utility Components
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';

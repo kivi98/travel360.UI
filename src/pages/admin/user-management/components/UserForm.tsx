@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
+import { Card, CardContent } from '@/components/ui/card.tsx';
 import { Eye, EyeOff } from 'lucide-react';
 import type { User, UserRole } from '@/types';
-import type { CreateUserRequest, UpdateUserRequest } from '@/services/userService';
+import type { CreateUserRequest, UpdateUserRequest } from '@/services/userService.ts';
 
 interface UserFormProps {
   user?: User;

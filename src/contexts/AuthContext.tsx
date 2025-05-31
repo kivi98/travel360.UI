@@ -36,13 +36,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const user = authService.getStoredUser();
 
       if (token && user) {
+        // Set temporary auth state while verifying
+        setAuthState({
+          user: user,
+          token: token,
+          isAuthenticated: true,
+          isLoading: true,
+        });
+
         // Verify token is still valid by fetching current user
         try {
           const response = await authService.getCurrentUser();
           if (response.success && response.data) {
             setAuthState({
               user: response.data,
-              token: apiService.getAuthToken(),
+              token: token,
               isAuthenticated: true,
               isLoading: false,
             });
@@ -50,6 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             localStorage.setItem('user_data', JSON.stringify(response.data));
           } else {
             // Token invalid, clear auth
+            console.warn('Token verification failed:', response.message);
             apiService.removeAuthToken();
             setAuthState({
               user: null,
@@ -59,13 +68,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             });
           }
         } catch (error) {
-          // Network error or invalid token
-          console.error('Auth verification failed:', error);
-          apiService.removeAuthToken();
+          // Network error - keep existing auth if stored data exists
+          console.warn('Auth verification failed, keeping stored auth:', error);
           setAuthState({
-            user: null,
-            token: null,
-            isAuthenticated: false,
+            user: user,
+            token: token,
+            isAuthenticated: true,
             isLoading: false,
           });
         }

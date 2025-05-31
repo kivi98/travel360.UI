@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, MoreHorizontal, Edit, Trash2, UserCheck, UserX, Key } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog.tsx';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu.tsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar.tsx';
 import { toast } from 'sonner';
-import { userService, type UserListParams } from '@/services/userService';
+import { userService, type UserListParams } from '@/services/userService.ts';
 import type { User, UserRole } from '@/types';
-import { UserForm } from './components/UserForm';
-import { UserDetailsDialog } from './components/UserDetailsDialog';
-import { DeleteUserDialog } from './components/DeleteUserDialog';
+import { UserForm } from './components/UserForm.tsx';
+import { UserDetailsDialog } from './components/UserDetailsDialog.tsx';
+import { DeleteUserDialog } from './components/DeleteUserDialog.tsx';
 
 const UserManagementPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);

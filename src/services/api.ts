@@ -36,11 +36,24 @@ class ApiService {
     this.api.interceptors.response.use(
       (response) => response,
       async (error) => {
-        if (error.response?.status === 401) {
-          // Token expired or unauthorized
-          localStorage.removeItem('auth_token');
-          localStorage.removeItem('user_data');
-          window.location.href = '/login';
+        const originalRequest = error.config;
+        
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          
+          // Only redirect to login if we're not in the auth initialization phase
+          const currentPath = window.location.pathname;
+          if (currentPath !== '/login' && currentPath !== '/register') {
+            // Token expired or unauthorized
+            this.removeAuthToken();
+            
+            // Add a small delay to allow any ongoing auth initialization to complete
+            setTimeout(() => {
+              if (window.location.pathname !== '/login') {
+                window.location.href = '/login';
+              }
+            }, 100);
+          }
         }
         return Promise.reject(error);
       }
