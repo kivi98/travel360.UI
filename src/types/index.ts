@@ -7,7 +7,7 @@ export interface User {
   lastName: string;
   role: UserRole;
   phoneNumber?: string;
-  isActive?: boolean;
+  active?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -152,9 +152,8 @@ export interface PaginatedResponse<T> {
   data: T[];
   pagination: {
     page: number;
-    limit: number;
+    size: number;
     total: number;
-    totalPages: number;
   };
 }
 

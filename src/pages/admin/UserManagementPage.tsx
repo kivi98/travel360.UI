@@ -22,7 +22,7 @@ const UserManagementPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<UserRole | 'ALL'>('ALL');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -42,10 +42,10 @@ const UserManagementPage: React.FC = () => {
       setLoading(true);
       const params: UserListParams = {
         page: currentPage,
-        limit: pageSize,
+        size: pageSize,
         search: searchTerm || undefined,
         role: roleFilter !== 'ALL' ? roleFilter : undefined,
-        isActive: statusFilter === 'ACTIVE' ? true : statusFilter === 'INACTIVE' ? false : undefined,
+        active: statusFilter === 'ACTIVE' ? true : statusFilter === 'INACTIVE' ? false : undefined,
         sortBy: 'createdAt',
         sortOrder: 'desc'
       };
@@ -53,9 +53,9 @@ const UserManagementPage: React.FC = () => {
       const response = await userService.getAllUsers(params);
       
       if (response.success) {
-        setUsers(response.data.data);
-        setTotalPages(response.data.pagination.totalPages);
-        setTotalUsers(response.data.pagination.total);
+        setUsers(response.data ?? []);
+        setTotalPages(response.pagination?.page ?? 1);
+        setTotalUsers(response.pagination?.total ?? 1);
       } else {
         toast.error('Failed to load users');
       }
@@ -125,7 +125,7 @@ const UserManagementPage: React.FC = () => {
     try {
       const response = await userService.toggleUserStatus(user.id);
       if (response.success) {
-        toast.success(`User ${user.isActive ? 'deactivated' : 'activated'} successfully`);
+        toast.success(`User ${user.active ? 'deactivated' : 'activated'} successfully`);
         loadUsers();
       } else {
         toast.error(response.message || 'Failed to update user status');
@@ -286,8 +286,8 @@ const UserManagementPage: React.FC = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getStatusBadgeVariant(user.isActive)}>
-                          {user.isActive ? 'Active' : 'Inactive'}
+                        <Badge variant={getStatusBadgeVariant(user.active)}>
+                          {user.active ? 'Active' : 'Inactive'}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -321,7 +321,7 @@ const UserManagementPage: React.FC = () => {
                             <DropdownMenuItem
                               onClick={() => handleToggleUserStatus(user)}
                             >
-                              {user.isActive ? (
+                              {user.active ? (
                                 <>
                                   <UserX className="mr-2 h-4 w-4" />
                                   Deactivate

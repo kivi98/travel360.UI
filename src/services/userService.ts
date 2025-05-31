@@ -23,12 +23,12 @@ export interface UpdateUserRequest {
 export interface UserFilters {
   role?: UserRole;
   search?: string;
-  isActive?: boolean;
+  active?: boolean;
 }
 
 export interface UserListParams extends UserFilters {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
@@ -36,19 +36,19 @@ export interface UserListParams extends UserFilters {
 class UserService {
   private readonly baseUrl = '/users';
 
-  async getAllUsers(params: UserListParams = {}): Promise<ApiResponse<PaginatedResponse<User>>> {
+  async getAllUsers(params: UserListParams = {}): Promise<PaginatedResponse<User>> {
     const queryParams = new URLSearchParams();
     
     if (params.page) queryParams.append('page', params.page.toString());
-    if (params.limit) queryParams.append('limit', params.limit.toString());
+    if (params.size) queryParams.append('size', params.size.toString());
     if (params.role) queryParams.append('role', params.role);
     if (params.search) queryParams.append('search', params.search);
-    if (params.isActive !== undefined) queryParams.append('isActive', params.isActive.toString());
+    if (params.active !== undefined) queryParams.append('active', params.active.toString());
     if (params.sortBy) queryParams.append('sortBy', params.sortBy);
     if (params.sortOrder) queryParams.append('sortOrder', params.sortOrder);
 
     const url = queryParams.toString() ? `${this.baseUrl}?${queryParams}` : this.baseUrl;
-    return apiService.get<PaginatedResponse<User>>(url);
+    return apiService.getPaginated<User>(url);
   }
 
   async getUserById(id: number): Promise<ApiResponse<User>> {
