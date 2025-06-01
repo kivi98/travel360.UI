@@ -22,8 +22,8 @@ import { Plane, Search, Filter, MapPin } from 'lucide-react';
 export const FlightSearchPage: React.FC = () => {
   const { user } = useAuth();
   const [searchCriteria, setSearchCriteria] = useState<FlightSearchCriteria>({
-    origin: '',
-    destination: '',
+    originAirportId: 0,
+    destinationAirportId: 0,
     departureDate: '',
     seatClass: undefined,
     passengers: 1,
@@ -90,11 +90,19 @@ export const FlightSearchPage: React.FC = () => {
     setFilters(newFilters);
   };
 
+  // Helper functions to get airport info from IDs
+  const getAirportById = (airportId: number) => {
+    return airports.find(airport => airport.id === airportId.toString());
+  };
+
+  const getOriginAirport = () => getAirportById(searchCriteria.originAirportId);
+  const getDestinationAirport = () => getAirportById(searchCriteria.destinationAirportId);
+
   const getFilteredResults = () => {
     if (!searchResults) return null;
 
-    let directFlights = [...searchResults.directFlights];
-    let transitFlights = [...searchResults.transitFlights];
+    let directFlights = [...(searchResults?.directFlights || [])];
+    let transitFlights = [...(searchResults?.transitFlights || [])];
 
     // Apply price filter
     if (filters.maxPrice > 0) {
@@ -160,6 +168,9 @@ export const FlightSearchPage: React.FC = () => {
   const totalResults = filteredResults ? 
     filteredResults.directFlights.length + filteredResults.transitFlights.length : 0;
 
+  const originAirport = getOriginAirport();
+  const destinationAirport = getDestinationAirport();
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Header */}
@@ -199,8 +210,8 @@ export const FlightSearchPage: React.FC = () => {
             airports={airports || []}
             isLoadingAirports={isLoadingAirports || false}
             initialCriteria={searchCriteria || {
-              origin: '',
-              destination: '',
+              originAirportId: 0,
+              destinationAirportId: 0,
               departureDate: '',
               seatClass: undefined,
               passengers: 1,
@@ -259,7 +270,7 @@ export const FlightSearchPage: React.FC = () => {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h2 className="text-xl font-semibold">
-                        {searchCriteria.origin} → {searchCriteria.destination}
+                        {originAirport?.code || 'Origin'} → {destinationAirport?.code || 'Destination'}
                       </h2>
                       <p className="text-muted-foreground flex items-center gap-1">
                         <MapPin className="h-4 w-4" />

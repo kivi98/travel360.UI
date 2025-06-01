@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -14,8 +15,8 @@ import { SeatClass as SeatClassEnum } from '@/types';
 import { Search, MapPin, Calendar, Users, Plane, ArrowLeftRight } from 'lucide-react';
 
 const searchSchema = z.object({
-  origin: z.string().min(1, 'Origin is required'),
-  destination: z.string().min(1, 'Destination is required'),
+  originAirportId: z.number().min(1, 'Origin airport is required'),
+  destinationAirportId: z.number().min(1, 'Destination airport is required'),
   departureDate: z.string().min(1, 'Departure date is required'),
   seatClass: z.nativeEnum(SeatClassEnum).optional(),
   passengers: z.number().min(1, 'At least 1 passenger required').max(9, 'Maximum 9 passengers'),
@@ -45,8 +46,8 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
   const form = useForm<SearchFormData>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
-      origin: initialCriteria?.origin || '',
-      destination: initialCriteria?.destination || '',
+      originAirportId: initialCriteria?.originAirportId || 0,
+      destinationAirportId: initialCriteria?.destinationAirportId || 0,
       departureDate: initialCriteria?.departureDate || '',
       seatClass: initialCriteria?.seatClass,
       passengers: initialCriteria?.passengers || 1,
@@ -57,15 +58,35 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
   // Set minimum date to today
   const today = new Date().toISOString().split('T')[0];
 
+  // Create combobox options for airports
+  const airportOptions: ComboboxOption[] = useMemo(() => {
+    return airports.map(airport => ({
+      value: parseInt(airport.id),
+      label: `${airport.code} - ${airport.name}`,
+      searchTerms: [airport.code, airport.name, airport.city, airport.country]
+    }));
+  }, [airports]);
+
+  // Filter options to prevent selecting same airport for origin and destination
+  const originOptions = useMemo(() => {
+    const destinationId = form.watch('destinationAirportId');
+    return airportOptions.filter(option => option.value !== destinationId);
+  }, [airportOptions, form.watch('destinationAirportId')]);
+
+  const destinationOptions = useMemo(() => {
+    const originId = form.watch('originAirportId');
+    return airportOptions.filter(option => option.value !== originId);
+  }, [airportOptions, form.watch('originAirportId')]);
+
   const handleSwapLocations = () => {
-    const origin = form.getValues('origin');
-    const destination = form.getValues('destination');
+    const originId = form.getValues('originAirportId');
+    const destinationId = form.getValues('destinationAirportId');
     
     setSwapAnimation(true);
     setTimeout(() => setSwapAnimation(false), 300);
     
-    form.setValue('origin', destination);
-    form.setValue('destination', origin);
+    form.setValue('originAirportId', destinationId);
+    form.setValue('destinationAirportId', originId);
   };
 
   const onSubmit = (data: SearchFormData) => {
@@ -77,22 +98,14 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
 
   const handleClear = () => {
     form.reset({
-      origin: '',
-      destination: '',
+      originAirportId: 0,
+      destinationAirportId: 0,
       departureDate: '',
       seatClass: undefined,
       passengers: 1,
       includeTransit: false
     });
   };
-
-  const filteredOriginAirports = airports.filter(airport => 
-    airport.code !== form.watch('destination')
-  );
-
-  const filteredDestinationAirports = airports.filter(airport => 
-    airport.code !== form.watch('origin')
-  );
 
   return (
     <Form {...form}>
@@ -130,7 +143,7 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
           <div className="md:col-span-4">
             <FormField
               control={form.control}
-              name="origin"
+              name="originAirportId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -138,35 +151,16 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                     From
                   </FormLabel>
                   <FormControl>
-                    <Select 
-                      value={field.value} 
+                    <Combobox
+                      options={originOptions}
+                      value={field.value}
                       onValueChange={field.onChange}
+                      placeholder="Select origin airport"
+                      searchPlaceholder="Search airports..."
+                      emptyMessage="No airports found"
                       disabled={isLoadingAirports}
-                    >
-                      <SelectTrigger className="h-12 w-full">
-                        <SelectValue placeholder="Select origin airport" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {isLoadingAirports ? (
-                          <div className="flex items-center justify-center p-4">
-                            <LoadingSpinner size="sm" />
-                            <span className="ml-2 text-sm">Loading airports...</span>
-                          </div>
-                        ) : (
-                          filteredOriginAirports.map((airport) => (
-                            <SelectItem key={airport.id} value={airport.code}>
-                              <div className="flex flex-row gap-1">
-                                <span className="font-medium">{airport.code}</span>
-                                <span>-</span>
-                                <span className="text-sm text-muted-foreground">
-                                  {airport.name}, {airport.city}
-                                </span>
-                              </div>
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                      loading={isLoadingAirports}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,7 +169,7 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
           </div>
 
           {/* Swap Button */}
-          <div className=" flex justify-center align-middle">
+          <div className="flex justify-center align-middle">
             <Button
               type="button"
               variant="outline"
@@ -192,7 +186,7 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
           <div className="md:col-span-4">
             <FormField
               control={form.control}
-              name="destination"
+              name="destinationAirportId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -200,35 +194,16 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                     To
                   </FormLabel>
                   <FormControl>
-                    <Select 
-                      value={field.value} 
+                    <Combobox
+                      options={destinationOptions}
+                      value={field.value}
                       onValueChange={field.onChange}
+                      placeholder="Select destination airport"
+                      searchPlaceholder="Search airports..."
+                      emptyMessage="No airports found"
                       disabled={isLoadingAirports}
-                    >
-                      <SelectTrigger className="h-12 w-full">
-                        <SelectValue placeholder="Select destination airport" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {isLoadingAirports ? (
-                          <div className="flex items-center justify-center p-4">
-                            <LoadingSpinner size="sm" />
-                            <span className="ml-2 text-sm">Loading airports...</span>
-                          </div>
-                        ) : (
-                          filteredDestinationAirports.map((airport) => (
-                            <SelectItem key={airport.id} value={airport.code}>
-                              <div className="flex flex-row gap-1">
-                                <span className="font-medium">{airport.code}</span>
-                                <span>-</span>
-                                <span className="text-sm text-muted-foreground">
-                                  {airport.name}, {airport.city}
-                                </span>
-                              </div>
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                      loading={isLoadingAirports}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -339,17 +314,6 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                    {/* {field.value && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => field.onChange(undefined)}
-                        className="h-12 px-3 flex-shrink-0"
-                      >
-                        Clear
-                      </Button>
-                    )} */}
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -423,28 +387,36 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
           </Label>
           <div className="flex flex-wrap gap-2">
             {[
-              { from: 'JFK', to: 'LAX', route: 'New York → Los Angeles' },
-              { from: 'LHR', to: 'CDG', route: 'London → Paris' },
-              { from: 'DXB', to: 'LHR', route: 'Dubai → London' },
-              { from: 'SIN', to: 'NRT', route: 'Singapore → Tokyo' }
-            ].map((route) => (
-              <Button
-                key={`${route.from}-${route.to}`}
-                type="button"
-                variant="outline"
-                size="sm"
-                className="text-xs"
-                onClick={() => {
-                  form.setValue('origin', route.from);
-                  form.setValue('destination', route.to);
-                }}
-              >
-                {route.route}
-              </Button>
-            ))}
+              { fromCode: 'JFK', toCode: 'LAX', route: 'New York → Los Angeles' },
+              { fromCode: 'LHR', toCode: 'CDG', route: 'London → Paris' },
+              { fromCode: 'DXB', toCode: 'LHR', route: 'Dubai → London' },
+              { fromCode: 'SIN', toCode: 'NRT', route: 'Singapore → Tokyo' }
+            ].map((route) => {
+              const fromAirport = airports.find(a => a.code === route.fromCode);
+              const toAirport = airports.find(a => a.code === route.toCode);
+              
+              return (
+                <Button
+                  key={`${route.fromCode}-${route.toCode}`}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    if (fromAirport && toAirport) {
+                      form.setValue('originAirportId', parseInt(fromAirport.id));
+                      form.setValue('destinationAirportId', parseInt(toAirport.id));
+                    }
+                  }}
+                  disabled={!fromAirport || !toAirport}
+                >
+                  {route.route}
+                </Button>
+              );
+            })}
           </div>
         </div>
       </form>
     </Form>
   );
-}; 
+};

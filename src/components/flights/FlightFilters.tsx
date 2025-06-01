@@ -51,17 +51,21 @@ export const FlightFilters: React.FC<FlightFiltersProps> = ({
     
     const allPrices: number[] = [];
     
-    // Add direct flight prices
-    searchResults.directFlights.forEach(flight => {
-      allPrices.push(flight.economyClassPrice);
-      allPrices.push(flight.businessClassPrice);
-      allPrices.push(flight.firstClassPrice);
-    });
+    // Add direct flight prices - check if directFlights exists and is an array
+    if (searchResults.directFlights && Array.isArray(searchResults.directFlights)) {
+      searchResults.directFlights.forEach(flight => {
+        allPrices.push(flight.economyClassPrice);
+        allPrices.push(flight.businessClassPrice);
+        allPrices.push(flight.firstClassPrice);
+      });
+    }
     
-    // Add transit flight prices
-    searchResults.transitFlights.forEach(option => {
-      allPrices.push(option.totalPrice);
-    });
+    // Add transit flight prices - check if transitFlights exists and is an array
+    if (searchResults.transitFlights && Array.isArray(searchResults.transitFlights)) {
+      searchResults.transitFlights.forEach(option => {
+        allPrices.push(option.totalPrice);
+      });
+    }
     
     if (allPrices.length === 0) return { min: 0, max: 5000 };
     
@@ -77,18 +81,26 @@ export const FlightFilters: React.FC<FlightFiltersProps> = ({
     
     const airlines = new Set<string>();
     
-    searchResults.directFlights.forEach(flight => {
-      // Assuming airline info is in airplane model or we can extract from flight number
-      const airline = flight.flightNumber.substring(0, 2); // First 2 chars usually airline code
-      airlines.add(airline);
-    });
-    
-    searchResults.transitFlights.forEach(option => {
-      option.flights.forEach(flight => {
-        const airline = flight.flightNumber.substring(0, 2);
+    // Check if directFlights exists and is an array
+    if (searchResults.directFlights && Array.isArray(searchResults.directFlights)) {
+      searchResults.directFlights.forEach(flight => {
+        // Assuming airline info is in airplane model or we can extract from flight number
+        const airline = flight.flightNumber.substring(0, 2); // First 2 chars usually airline code
         airlines.add(airline);
       });
-    });
+    }
+    
+    // Check if transitFlights exists and is an array
+    if (searchResults.transitFlights && Array.isArray(searchResults.transitFlights)) {
+      searchResults.transitFlights.forEach(option => {
+        if (option.flights && Array.isArray(option.flights)) {
+          option.flights.forEach(flight => {
+            const airline = flight.flightNumber.substring(0, 2);
+            airlines.add(airline);
+          });
+        }
+      });
+    }
     
     return Array.from(airlines);
   };

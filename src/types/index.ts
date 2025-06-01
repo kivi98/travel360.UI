@@ -105,8 +105,8 @@ export enum BookingStatus {
 
 // Search and Filter Types
 export interface FlightSearchCriteria {
-  origin: string;
-  destination: string;
+  originAirportId: number;
+  destinationAirportId: number;
   departureDate: string;
   seatClass?: SeatClass;
   passengers?: number;

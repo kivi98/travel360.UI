@@ -127,7 +127,7 @@ export const FlightSearchResults: React.FC<FlightSearchResultsProps> = ({
                 <div>
                   <h3 className="font-semibold text-lg">{flight.flightNumber}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {flight.airplane.model} • {flight.airplane.registration}
+                    {flight.airplane.model} • {flight.airplane.id}
                   </p>
                 </div>
                 <Badge className={getStatusColor(flight.status)}>
