@@ -132,7 +132,7 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                       onValueChange={field.onChange}
                       disabled={isLoadingAirports}
                     >
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger className="h-12 w-full">
                         <SelectValue placeholder="Select origin airport" />
                       </SelectTrigger>
                       <SelectContent>
@@ -144,8 +144,9 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                         ) : (
                           filteredOriginAirports.map((airport) => (
                             <SelectItem key={airport.id} value={airport.code}>
-                              <div className="flex flex-col">
+                              <div className="flex flex-row gap-1">
                                 <span className="font-medium">{airport.code}</span>
+                                <span>-</span>
                                 <span className="text-sm text-muted-foreground">
                                   {airport.name}, {airport.city}
                                 </span>
@@ -163,13 +164,13 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
           </div>
 
           {/* Swap Button */}
-          <div className="md:col-span-1 flex items-end justify-center pb-2">
+          <div className=" flex justify-center align-middle">
             <Button
               type="button"
               variant="outline"
               size="icon"
               onClick={handleSwapLocations}
-              className={`h-12 w-12 transition-transform duration-300 ${swapAnimation ? 'rotate-180' : ''}`}
+              className={`h-8 w-8 mt-6.5 transition-transform duration-300 ${swapAnimation ? 'rotate-180' : ''}`}
               disabled={isLoadingAirports}
             >
               <ArrowLeftRight className="h-4 w-4" />
@@ -193,7 +194,7 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                       onValueChange={field.onChange}
                       disabled={isLoadingAirports}
                     >
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger className="h-12 w-full">
                         <SelectValue placeholder="Select destination airport" />
                       </SelectTrigger>
                       <SelectContent>
@@ -205,8 +206,9 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                         ) : (
                           filteredDestinationAirports.map((airport) => (
                             <SelectItem key={airport.id} value={airport.code}>
-                              <div className="flex flex-col">
+                              <div className="flex flex-row gap-1">
                                 <span className="font-medium">{airport.code}</span>
+                                <span>-</span>
                                 <span className="text-sm text-muted-foreground">
                                   {airport.name}, {airport.city}
                                 </span>
@@ -238,7 +240,7 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                     <Input
                       type="date"
                       min={today}
-                      className="h-12"
+                      className="h-9 w-full"
                       {...field}
                     />
                   </FormControl>
@@ -266,7 +268,7 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                     value={field.value.toString()}
                     onValueChange={(value) => field.onChange(parseInt(value))}
                   >
-                    <SelectTrigger className="h-12">
+                    <SelectTrigger className="h-12 w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -294,46 +296,49 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                   Class
                 </FormLabel>
                 <FormControl>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 w-full">
                     <Select
                       value={field.value || ""}
                       onValueChange={(value) => field.onChange(value || undefined)}
                     >
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger className="h-12 w-full">
                         <SelectValue placeholder="Any class" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value={SeatClassEnum.ECONOMY}>
-                          <div className="flex flex-col">
+                          <div className="flex flex-row gap-1">
                             <span>Economy</span>
-                            <span className="text-xs text-muted-foreground">Best value</span>
+                            <span>-</span>
+                            <span className="text-xs text-muted-foreground mt-0.5">Best value</span>
                           </div>
                         </SelectItem>
                         <SelectItem value={SeatClassEnum.BUSINESS}>
-                          <div className="flex flex-col">
+                          <div className="flex flex-row gap-1">
                             <span>Business</span>
-                            <span className="text-xs text-muted-foreground">Extra comfort</span>
+                            <span>-</span>
+                            <span className="text-xs text-muted-foreground mt-0.5">Extra comfort</span>
                           </div>
                         </SelectItem>
                         <SelectItem value={SeatClassEnum.FIRST}>
-                          <div className="flex flex-col">
+                          <div className="flex flex-row gap-1">
                             <span>First Class</span>
+                            <span>-</span>
                             <span className="text-xs text-muted-foreground">Premium experience</span>
                           </div>
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                    {field.value && (
+                    {/* {field.value && (
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => field.onChange(undefined)}
-                        className="h-12 px-3"
+                        className="h-12 px-3 flex-shrink-0"
                       >
                         Clear
                       </Button>
-                    )}
+                    )} */}
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -369,11 +374,20 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
         </div>
 
         {/* Search Button */}
-        <div className="flex justify-center pt-4">
+        <div className="flex justify-center pt-4 gap-4">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="px-8 h-12 cursor-pointer"
+            disabled={isLoading || isLoadingAirports}
+          >
+            Clear
+          </Button>
           <Button
             type="submit"
             size="lg"
-            className="px-8 h-12"
+            className="px-8 h-12 cursor-pointer"
             disabled={isLoading || isLoadingAirports}
           >
             {isLoading ? (
