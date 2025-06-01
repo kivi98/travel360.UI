@@ -34,13 +34,13 @@ export interface Airport {
 export interface Airplane {
   id: string;
   model: string;
-  capacity: AirplaneCapacity;
-  registration: string;
-  firstClassSeats: number;
-  businessClassSeats: number;
-  economyClassSeats: number;
-  totalSeats: number;
-  isActive: boolean;
+  size: AirplaneCapacity;
+  registrationNumber: string;
+  firstClassCapacity: number;
+  businessClassCapacity: number;
+  economyClassCapacity: number;
+  totalCapacity: number;
+  active: boolean;
 }
 
 export enum AirplaneCapacity {

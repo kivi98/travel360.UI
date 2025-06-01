@@ -75,6 +75,17 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
     });
   };
 
+  const handleClear = () => {
+    form.reset({
+      origin: '',
+      destination: '',
+      departureDate: '',
+      seatClass: undefined,
+      passengers: 1,
+      includeTransit: false
+    });
+  };
+
   const filteredOriginAirports = airports.filter(airport => 
     airport.code !== form.watch('destination')
   );
@@ -381,6 +392,7 @@ export const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
             size="sm"
             className="px-8 h-12 cursor-pointer"
             disabled={isLoading || isLoadingAirports}
+            onClick={handleClear}
           >
             Clear
           </Button>

@@ -23,7 +23,7 @@ import { BookingManagementPage } from '@/pages/BookingManagementPage';
 import { UserManagementPage } from '@/pages/admin/user-management';
 import { ReportsPage } from '@/pages/ReportsPage';
 import { AirportManagementPage } from '@/pages/AirportManagementPage';
-import { AirplaneManagementPage } from '@/pages/user/airplain/AirplaneManagementPage.tsx';
+import { AirplaneManagementPage } from '@/pages/admin/airplain-management/AirplaneManagementPage.tsx';
 
 // Utility Components
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
