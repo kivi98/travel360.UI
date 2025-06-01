@@ -543,7 +543,7 @@ export const AirplaneManagementPage: React.FC = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="search">Search</Label>
+              <Label htmlFor="search" className='mb-2'>Search</Label>
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -557,9 +557,9 @@ export const AirplaneManagementPage: React.FC = () => {
             </div>
             
             <div>
-              <Label>Status</Label>
+              <Label className='mb-2'>Status</Label>
               <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
-                <SelectTrigger>
+                <SelectTrigger className='w-full'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -571,9 +571,9 @@ export const AirplaneManagementPage: React.FC = () => {
             </div>
             
             <div>
-              <Label>Capacity</Label>
+              <Label className='mb-2'>Capacity</Label>
               <Select value={capacityFilter} onValueChange={(value: any) => setCapacityFilter(value)}>
-                <SelectTrigger>
+                <SelectTrigger className='w-full'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
