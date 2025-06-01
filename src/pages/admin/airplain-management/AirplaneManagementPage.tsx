@@ -943,7 +943,7 @@ export const AirplaneManagementPage: React.FC = () => {
                           {airplaneFlights.map((flight) => (
                             <TableRow key={flight.id}>
                               <TableCell className="font-medium">{flight.flightNumber}</TableCell>
-                              <TableCell>{flight.origin.code} → {flight.destination.code}</TableCell>
+                              <TableCell>{flight.originAirport.code} → {flight.destinationAirport.code}</TableCell>
                               <TableCell>
                                 {new Date(flight.departureTime).toLocaleDateString()}{' '}
                                 {new Date(flight.departureTime).toLocaleTimeString()}

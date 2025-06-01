@@ -72,7 +72,7 @@ export const FlightSearchPage: React.FC = () => {
       setError(null);
       setSearchCriteria(criteria);
 
-      const response = await flightService.searchFlights(criteria);
+      const response = await flightService.searchFlightSummary(criteria);
       if (response.success) {
         setSearchResults(response.data || null);
         setHasSearched(true);
@@ -104,6 +104,9 @@ export const FlightSearchPage: React.FC = () => {
     let directFlights = [...(searchResults?.directFlights || [])];
     let transitFlights = [...(searchResults?.transitFlights || [])];
 
+    console.log("directFlights", directFlights);
+    console.log("transitFlights", transitFlights);
+
     // Apply price filter
     if (filters.maxPrice > 0) {
       directFlights = directFlights.filter(flight => {
@@ -119,9 +122,9 @@ export const FlightSearchPage: React.FC = () => {
     // Apply seat class filter
     if (filters.seatClass) {
       directFlights = directFlights.filter(flight => {
-        const availableSeats = filters.seatClass === SeatClassEnum.FIRST ? flight.availableFirstClassSeats :
-                              filters.seatClass === SeatClassEnum.BUSINESS ? flight.availableBusinessClassSeats :
-                              flight.availableEconomyClassSeats;
+        const availableSeats = filters.seatClass === SeatClassEnum.FIRST ? flight.firstClassAvailableSeats :
+                              filters.seatClass === SeatClassEnum.BUSINESS ? flight.businessClassAvailableSeats :
+                              flight.economyClassAvailableSeats;
         return availableSeats > 0;
       });
     }

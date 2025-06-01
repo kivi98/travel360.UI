@@ -13,6 +13,10 @@ import type {
 
 class FlightService {
   // Flight Search
+  async searchFlightSummary(criteria: FlightSearchCriteria): Promise<ApiResponse<FlightSearchResult>> {
+    return apiService.post<FlightSearchResult>('/flights/search/comprehensive', criteria);
+  }
+
   async searchFlights(criteria: FlightSearchCriteria): Promise<ApiResponse<FlightSearchResult>> {
     return apiService.post<FlightSearchResult>('/flights/search', criteria);
   }

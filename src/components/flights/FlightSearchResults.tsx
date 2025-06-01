@@ -72,12 +72,12 @@ export const FlightSearchResults: React.FC<FlightSearchResultsProps> = ({
   const getAvailableSeats = (flight: Flight, seatClass?: SeatClass) => {
     switch (seatClass) {
       case SeatClassEnum.FIRST:
-        return flight.availableFirstClassSeats;
+        return flight.firstClassAvailableSeats;
       case SeatClassEnum.BUSINESS:
-        return flight.availableBusinessClassSeats;
+        return flight.businessClassAvailableSeats;
       case SeatClassEnum.ECONOMY:
       default:
-        return flight.availableEconomyClassSeats;
+        return flight.economyClassAvailableSeats;
     }
   };
 
@@ -98,7 +98,7 @@ export const FlightSearchResults: React.FC<FlightSearchResultsProps> = ({
     }
   };
 
-  const handleBookFlight = (flightId: string) => {
+  const handleBookFlight = (flightId: number) => {
     if (!user) {
       navigate('/login');
       return;
@@ -127,7 +127,7 @@ export const FlightSearchResults: React.FC<FlightSearchResultsProps> = ({
                 <div>
                   <h3 className="font-semibold text-lg">{flight.flightNumber}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {flight.airplane.model} • {flight.airplane.id}
+                    {flight.airplaneModel} • {flight.airplaneRegistration}
                   </p>
                 </div>
                 <Badge className={getStatusColor(flight.status)}>
@@ -139,7 +139,7 @@ export const FlightSearchResults: React.FC<FlightSearchResultsProps> = ({
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <p className="text-2xl font-bold">{formatTime(flight.departureTime)}</p>
-                  <p className="text-sm text-muted-foreground">{flight.origin.code}</p>
+                  <p className="text-sm text-muted-foreground">{flight.originAirport.code}</p>
                   <p className="text-xs text-muted-foreground">{formatDate(flight.departureTime)}</p>
                 </div>
                 
@@ -154,7 +154,7 @@ export const FlightSearchResults: React.FC<FlightSearchResultsProps> = ({
                 
                 <div className="text-center">
                   <p className="text-2xl font-bold">{formatTime(flight.arrivalTime)}</p>
-                  <p className="text-sm text-muted-foreground">{flight.destination.code}</p>
+                  <p className="text-sm text-muted-foreground">{flight.destinationAirport.code}</p>
                   <p className="text-xs text-muted-foreground">{formatDate(flight.arrivalTime)}</p>
                 </div>
               </div>
@@ -249,7 +249,7 @@ export const FlightSearchResults: React.FC<FlightSearchResultsProps> = ({
                   <div key={flight.id} className="flex items-center gap-4">
                     <div className="text-center min-w-[80px]">
                       <p className="text-lg font-semibold">{formatTime(flight.departureTime)}</p>
-                      <p className="text-sm text-muted-foreground">{flight.origin.code}</p>
+                      <p className="text-sm text-muted-foreground">{flight.originAirport.code}</p>
                     </div>
                     
                     <div className="flex-1 flex items-center gap-2">
@@ -265,12 +265,12 @@ export const FlightSearchResults: React.FC<FlightSearchResultsProps> = ({
                     
                     <div className="text-center min-w-[80px]">
                       <p className="text-lg font-semibold">{formatTime(flight.arrivalTime)}</p>
-                      <p className="text-sm text-muted-foreground">{flight.destination.code}</p>
+                      <p className="text-sm text-muted-foreground">{flight.destinationAirport.code}</p>
                     </div>
 
                     {index < option.flights.length - 1 && (
                       <div className="text-xs text-muted-foreground ml-4">
-                        Layover in {flight.destination.city}
+                        Layover in {flight.destinationAirport.city}
                       </div>
                     )}
                   </div>

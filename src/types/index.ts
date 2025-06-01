@@ -51,20 +51,22 @@ export enum AirplaneCapacity {
 
 // Flight Types
 export interface Flight {
-  id: string;
+  id: number;
   flightNumber: string;
-  airplane: Airplane;
-  origin: Airport;
-  destination: Airport;
+  // airplane: Airplane;
+  airplaneModel: string;
+  airplaneRegistration: string;
+  originAirport: Airport;
+  destinationAirport: Airport;
   departureTime: string;
   arrivalTime: string;
   status: FlightStatus;
   firstClassPrice: number;
   businessClassPrice: number;
   economyClassPrice: number;
-  availableFirstClassSeats: number;
-  availableBusinessClassSeats: number;
-  availableEconomyClassSeats: number;
+  firstClassAvailableSeats: number;
+  businessClassAvailableSeats: number;
+  economyClassAvailableSeats: number;
 }
 
 export enum FlightStatus {

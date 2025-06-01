@@ -99,7 +99,7 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(({
           placeholder={open ? searchPlaceholder : placeholder}
           disabled={disabled || loading}
           className={cn(
-            "h-12 pr-10",
+            "h-9 pr-10",
             selectedOption && !open && "text-foreground"
           )}
         />
