@@ -25,7 +25,7 @@ export interface Airport {
   name: string;
   city: string;
   country: string;
-  timezone: string;
+  timeZone: string;
   latitude?: number;
   longitude?: number;
 }
