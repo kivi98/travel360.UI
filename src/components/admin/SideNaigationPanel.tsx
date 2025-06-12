@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserRole } from '@/types';
 import { cn } from '@/lib/utils';
@@ -13,25 +13,14 @@ import { Badge } from '@/components/ui/badge';
 import {
   LayoutDashboard,
   Plane,
-  Calendar,
   Users,
   MapPin,
   BarChart3,
   Settings,
   LogOut,
-  User,
   CreditCard,
-  Bell,
-  Shield,
-  FileText,
   HelpCircle,
-  ChevronDown,
-  ChevronRight,
-  Building,
-  Globe,
   Ticket,
-  TrendingUp,
-  UserCheck,
   Database,
 } from 'lucide-react';
 
@@ -61,215 +50,48 @@ const navigationItems: NavigationItem[] = [
     href: '/manage/flights',
     icon: Plane,
     roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-    children: [
-      {
-        title: 'All Flights',
-        href: '/manage/flights',
-        icon: Plane,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'Add Flight',
-        href: '/manage/flights/add',
-        icon: Plane,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'Flight Schedules',
-        href: '/manage/flights/schedules',
-        icon: Calendar,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-    ],
   },
   {
     title: 'Booking Management',
     href: '/manage/bookings',
     icon: Ticket,
-    badge: 'New',
     roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-    children: [
-      {
-        title: 'All Bookings',
-        href: '/manage/bookings',
-        icon: Ticket,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'Pending Bookings',
-        href: '/manage/bookings/pending',
-        icon: Calendar,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'Cancelled Bookings',
-        href: '/manage/bookings/cancelled',
-        icon: Calendar,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-    ],
   },
   {
     title: 'User Management',
     href: '/manage/users',
     icon: Users,
     roles: [UserRole.ADMINISTRATOR],
-    children: [
-      {
-        title: 'All Users',
-        href: '/manage/users',
-        icon: Users,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-      {
-        title: 'Customers',
-        href: '/manage/users/customers',
-        icon: User,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-      {
-        title: 'Operators',
-        href: '/manage/users/operators',
-        icon: UserCheck,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-      {
-        title: 'Administrators',
-        href: '/manage/users/admins',
-        icon: Shield,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-    ],
   },
   {
     title: 'Airport Management',
     href: '/manage/airports',
     icon: MapPin,
     roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-    children: [
-      {
-        title: 'All Airports',
-        href: '/manage/airports',
-        icon: MapPin,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'Add Airport',
-        href: '/manage/airports/add',
-        icon: Building,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'Airport Routes',
-        href: '/manage/airports/routes',
-        icon: Globe,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-    ],
   },
   {
     title: 'Airplane Management',
     href: '/manage/airplanes',
     icon: Plane,
     roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-    children: [
-      {
-        title: 'All Airplanes',
-        href: '/manage/airplanes',
-        icon: Plane,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'Add Airplane',
-        href: '/manage/airplanes/add',
-        icon: Plane,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'Maintenance',
-        href: '/manage/airplanes/maintenance',
-        icon: Settings,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-    ],
   },
   {
     title: 'Analytics & Reports',
     href: '/reports',
     icon: BarChart3,
     roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-    children: [
-      {
-        title: 'Sales Reports',
-        href: '/reports/sales',
-        icon: TrendingUp,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'Flight Analytics',
-        href: '/reports/flights',
-        icon: BarChart3,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-      {
-        title: 'User Analytics',
-        href: '/reports/users',
-        icon: Users,
-        roles: [UserRole.ADMINISTRATOR, UserRole.OPERATOR],
-      },
-    ],
   },
   {
     title: 'Financial Management',
     href: '/finance',
     icon: CreditCard,
     roles: [UserRole.ADMINISTRATOR],
-    children: [
-      {
-        title: 'Transactions',
-        href: '/finance/transactions',
-        icon: CreditCard,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-      {
-        title: 'Revenue Reports',
-        href: '/finance/revenue',
-        icon: TrendingUp,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-      {
-        title: 'Payment Methods',
-        href: '/finance/payments',
-        icon: CreditCard,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-    ],
   },
   {
     title: 'System Management',
     href: '/system',
     icon: Database,
     roles: [UserRole.ADMINISTRATOR],
-    children: [
-      {
-        title: 'System Settings',
-        href: '/system/settings',
-        icon: Settings,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-      {
-        title: 'Notifications',
-        href: '/system/notifications',
-        icon: Bell,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-      {
-        title: 'Audit Logs',
-        href: '/system/logs',
-        icon: FileText,
-        roles: [UserRole.ADMINISTRATOR],
-      },
-    ],
   },
 ];
 
@@ -294,8 +116,7 @@ export const SideNavigationPanel: React.FC<SideNavigationPanelProps> = ({
 }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
-
+  const navigate = useNavigate();
   const filteredNavigation = navigationItems.filter(item =>
     user ? item.roles.includes(user.role) : false
   );
@@ -303,14 +124,6 @@ export const SideNavigationPanel: React.FC<SideNavigationPanelProps> = ({
   const filteredBottomNavigation = bottomNavigationItems.filter(item =>
     user ? item.roles.includes(user.role) : false
   );
-
-  const toggleExpanded = (href: string) => {
-    setExpandedItems(prev =>
-      prev.includes(href)
-        ? prev.filter(item => item !== href)
-        : [...prev, href]
-    );
-  };
 
   const isItemActive = (href: string) => {
     return location.pathname === href || location.pathname.startsWith(href + '/');
@@ -332,7 +145,6 @@ export const SideNavigationPanel: React.FC<SideNavigationPanelProps> = ({
 
   const renderNavigationItem = (item: NavigationItem, isChild = false) => {
     const hasChildren = item.children && item.children.length > 0;
-    const isExpanded = expandedItems.includes(item.href);
     const isActive = isParentActive(item);
     const Icon = item.icon;
 
@@ -346,30 +158,15 @@ export const SideNavigationPanel: React.FC<SideNavigationPanelProps> = ({
               isCollapsed ? "px-2" : "px-3",
               isActive && "bg-secondary text-secondary-foreground"
             )}
-            onClick={() => toggleExpanded(item.href)}
+            onClick={() => navigate(item.href)}
           >
             <Icon className={cn("h-4 w-4", isCollapsed ? "mr-0" : "mr-3")} />
             {!isCollapsed && (
               <>
                 <span className="flex-1 text-left">{item.title}</span>
-                {item.badge && (
-                  <Badge variant="secondary" className="ml-2 text-xs">
-                    {item.badge}
-                  </Badge>
-                )}
-                {isExpanded ? (
-                  <ChevronDown className="h-4 w-4 ml-2" />
-                ) : (
-                  <ChevronRight className="h-4 w-4 ml-2" />
-                )}
               </>
             )}
           </Button>
-          {isExpanded && !isCollapsed && (
-            <div className="space-y-1 ml-4">
-              {item.children?.map(child => renderNavigationItem(child, true))}
-            </div>
-          )}
         </div>
       );
     }
